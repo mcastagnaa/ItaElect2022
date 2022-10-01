@@ -44,6 +44,12 @@ dataset %>%
   filter(Partito == "MOVIMENTO 5 STELLE") %>%
   ggplot(aes(x = PercRdC, y = percVotes)) +
   geom_smooth(formula = y ~ x, method = "lm") +
-  geom_point()
+  geom_point() +
+  scale_y_continuous(labels = scales::percent)+
+  scale_x_continuous(labels = scales::percent)+
+  theme_bw() +
+  labs(x = "Percentuale percettori Redd/Pensione di cittadinanza",
+       y = "Percentuale voto Camera Movimento 5 stelle",
+       title = "Voti Camera dei deputati - Sep/2022")
 
 summary(lm(data = dataset, formula = percVotes ~ PercRdC))

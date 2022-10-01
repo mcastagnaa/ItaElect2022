@@ -40,7 +40,7 @@ dataset <- Votes %>%
   mutate(percVotes = Voti/Votanti) %>%
   full_join(PercRedCitt, by = "Provincia")
 
-dataset %>%
+p <- dataset %>%
   filter(Partito == "MOVIMENTO 5 STELLE") %>%
   ggplot(aes(x = PercRdC, y = percVotes)) +
   geom_smooth(formula = y ~ x, method = "lm") +
@@ -51,5 +51,16 @@ dataset %>%
   labs(x = "Percentuale percettori Redd/Pensione di cittadinanza",
        y = "Percentuale voto Camera Movimento 5 stelle",
        title = "Voti Camera dei deputati - Sep/2022")
+
+lm_eqn <- function(df){
+  m <- lm(percVotes ~ PercRdC, df);
+  eq <- substitute(italic(PercRdC) == a + b %.% italic(PercRdC)*","~~italic(r)^2~"="~r2, 
+                   list(a = format(unname(coef(m)[1]), digits = 2),
+                        b = format(unname(coef(m)[2]), digits = 2),
+                        r2 = format(summary(m)$r.squared, digits = 3)))
+  as.character(as.expression(eq));
+}
+
+p + geom_text(x = 0.02, y = 0.4, label = lm_eqn(dataset), parse = TRUE)
 
 summary(lm(data = dataset, formula = percVotes ~ PercRdC))

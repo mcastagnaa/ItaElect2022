@@ -44,8 +44,8 @@ dataset <- Votes %>%
 dataset %>%
   filter(Partito == "MOVIMENTO 5 STELLE") %>%
   #as.data.frame()
-  ggplot(aes(x = PercRdC, y = percVotes)) +
-  stat_poly_line(formula = y ~ x) +
+  ggplot(aes(x = PercRdC, y = percVotes, color = Zona)) +
+  stat_poly_line(formula = y ~ x, se = F) +
   stat_poly_eq(use_label(c("eq", "R2")),formula = y ~ x) +
   #geom_smooth(formula = y ~ x, method = "lm") +
   geom_point() +
@@ -56,4 +56,22 @@ dataset %>%
        y = "Percentuale voto Camera Movimento 5 stelle",
        title = "Voti Camera dei deputati - Sep/2022")
 
-lm(percVotes ~ PercRdC, data = dataset)
+dataset %>%
+  filter(Partito == "MOVIMENTO 5 STELLE") %>%
+  #as.data.frame()
+  ggplot(aes(x = PercRdC, y = percVotes)) +
+  stat_poly_line(formula = y ~ x, se = T) +
+  stat_poly_eq(use_label(c("eq", "R2")),formula = y ~ x) +
+  #geom_smooth(formula = y ~ x, method = "lm") +
+  geom_point() +
+  scale_y_continuous(labels = scales::percent)+
+  scale_x_continuous(labels = scales::percent)+
+  theme_bw() +
+  labs(x = "Percentuale percettori Redd/Pensione di cittadinanza",
+       y = "Percentuale voto Camera Movimento 5 stelle",
+       title = "Voti Camera dei deputati - Sep/2022")
+
+dataset <- dataset %>%
+  filter(Partito == "MOVIMENTO 5 STELLE")
+
+summary(lm(formula = percVotes ~ PercRdC, data = dataset))
